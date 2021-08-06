@@ -7,6 +7,10 @@ import com.javamaster.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,11 +22,23 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional
     public UserEntity saveUser(UserEntity userEntity) {
         RoleEntity userRole = roleEntityRepository.findByName("ROLE_USER");
         userEntity.setRoleEntity(userRole);
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         return userEntityRepository.save(userEntity);
+    }
+
+    public UserEntity findById(Long id){
+        Optional<UserEntity> byId = userEntityRepository.findById(id);
+        try {
+            return byId.get();
+        }
+        catch (NoSuchElementException e){
+            return new UserEntity();
+        }
+//        return byId.get();
     }
 
     public UserEntity findByLogin(String login) {

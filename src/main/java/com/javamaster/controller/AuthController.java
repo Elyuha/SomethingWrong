@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @RestController
 public class AuthController {
@@ -34,6 +35,7 @@ public class AuthController {
         UserEntity userEntity = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         if(userEntity == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        userEntity.setLastVisit(LocalDateTime.now());
         String token = jwtProvider.generateToken(userEntity.getLogin());
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
     }
