@@ -4,6 +4,7 @@ import com.javamaster.config.jwt.JwtFilter;
 import com.javamaster.entity.UserEntity;
 import com.javamaster.repository.RoleEntityRepository;
 import com.javamaster.repository.UserEntityRepository;
+import com.javamaster.service.MailSenderService;
 import com.javamaster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,12 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtFilter jwtFilter;
 
-    @Qualifier("oauth2ClientContext")
-    @Autowired
-    private OAuth2ClientContext oAuth2ClientContext;
-
     @Autowired
     private RoleEntityRepository roleEntityRepository;
+
+    @Autowired
+    private MailSenderService mailSender;
 
 
     public static String getCurrentUsername(){
@@ -61,7 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin/*").hasRole("ADMIN")
                 .antMatchers("/user/*").hasRole("USER")
-                .antMatchers("/register", "/auth").permitAll()
+                .antMatchers("/register", "/auth", "/activate/*").permitAll()
+                .and()
+                .formLogin().loginPage("/login").permitAll()
+                .and()
+                .logout().permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
@@ -71,41 +75,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public FilterRegistrationBean oAuth2FilterRegistration(OAuth2ClientContextFilter contextFilter){
-//        FilterRegistrationBean registration = new FilterRegistrationBean();
-//        registration.setFilter(contextFilter);
-//        registration.setOrder(-100);
-//        return registration;
-//    }
-//
-//    @Bean
-//    private Filter ssoFilter(){
-//        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
-//        OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oAuth2ClientContext);
-//
-//
-//    }
-
     @Bean
     public PrincipalExtractor principalExtractor(UserService userService){
         return map -> {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String sub = (String) map.get("sub");
-            Long id = Long.parseLong(sub.substring(10));
-            UserEntity userEntity = userService.findById(id);
-            if (userEntity.getEmail() == null){
+            PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                    .useDigits(true)
+                    .useLower(true)
+                    .useUpper(true)
+                    .build();
+
+            String email = (String) map.get("email");
+            UserEntity userEntity = userService.findByEmail(email);
+            if (userEntity == null){
+                String password = passwordGenerator.generate(8);
                 userEntity.setLogin((String) map.get("email"));
-                userEntity.setPassword(passwordEncoder.encode((String) map.get("email")) );
+                userEntity.setPassword(passwordEncoder.encode(password) );
                 userEntity.setUserpic((String) map.get("picture"));
                 userEntity.setGender((String) map.get("gender"));
                 userEntity.setName((String) map.get("name"));
                 userEntity.setRoleEntity(roleEntityRepository.findByName("ROLE_USER"));
                 userEntity.setEmail((String) map.get("email"));
                 userEntity.setLocale((String) map.get("locale"));
+                String message = String.format("Hello %s!"+
+                        "Your password: %s", userEntity.getLogin(), password);
+                mailSender.send(userEntity.getEmail(), "Password", message);
+                userService.saveUser(userEntity);
             }
 
-            userService.saveUser(userEntity);
+
 
             return userEntity;
         };

@@ -46,6 +46,12 @@ public class UserEntity {
     @Column
     private LocalDateTime lastVisit;
 
+    @Column
+    private boolean active;
+
+    @Column
+    private String activationCode;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private RoleEntity roleEntity;

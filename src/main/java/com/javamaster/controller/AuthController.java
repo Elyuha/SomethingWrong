@@ -23,9 +23,13 @@ public class AuthController {
     public ResponseEntity<String> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
         if(userService.findByLogin(registrationRequest.getLogin()) != null)
             return new ResponseEntity<>("This login is already used!", HttpStatus.CONFLICT);
+        if(userService.findByEmail(registrationRequest.getEmail()) != null){
+            return new ResponseEntity<>("This email is already used!", HttpStatus.CONFLICT);
+        }
         UserEntity u = new UserEntity();
         u.setPassword(registrationRequest.getPassword());
         u.setLogin(registrationRequest.getLogin());
+        u.setEmail(registrationRequest.getEmail());
         userService.saveUser(u);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
@@ -38,5 +42,14 @@ public class AuthController {
         userEntity.setLastVisit(LocalDateTime.now());
         String token = jwtProvider.generateToken(userEntity.getLogin());
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/activate/{code}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> activateUser(@PathVariable String code){
+        boolean isActive = userService.activateUser(code);
+        if(isActive == true)
+            return new ResponseEntity<>("User successfully activated", HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Activation code is not found", HttpStatus.NOT_FOUND);
     }
 }
