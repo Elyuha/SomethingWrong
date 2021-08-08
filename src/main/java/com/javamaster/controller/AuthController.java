@@ -39,6 +39,8 @@ public class AuthController {
         UserEntity userEntity = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         if(userEntity == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(userEntity.getActive())
+            return new ResponseEntity<>(HttpStatus.LOCKED);
         userEntity.setLastVisit(LocalDateTime.now());
         String token = jwtProvider.generateToken(userEntity.getLogin());
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);

@@ -36,7 +36,7 @@ public class UserService {
         if (!StringUtils.isEmpty(userEntity.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "For activated password, please, visit next link: http://localhost:9002/activate/%s",
+                            "For activated password, please, visit next link: http://localhost:9003/activate/%s",
                     userEntity.getLogin(),
                     userEntity.getActivationCode()
             );

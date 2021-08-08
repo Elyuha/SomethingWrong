@@ -39,13 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtFilter jwtFilter;
 
-    @Autowired
-    private RoleEntityRepository roleEntityRepository;
-
-    @Autowired
-    private MailSenderService mailSender;
-
-
     public static String getCurrentUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
@@ -61,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin/*").hasRole("ADMIN")
                 .antMatchers("/user/*").hasRole("USER")
-                .antMatchers("/register", "/auth", "/activate/*").permitAll()
+                .antMatchers("/register", "/auth", "/activate/*, /file/*").permitAll()
                 .and()
                 .formLogin().loginPage("/login").permitAll()
                 .and()
@@ -69,44 +62,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public PrincipalExtractor principalExtractor(UserService userService){
-        return map -> {
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
-                    .useDigits(true)
-                    .useLower(true)
-                    .useUpper(true)
-                    .build();
-
-            String email = (String) map.get("email");
-            UserEntity userEntity = userService.findByEmail(email);
-            if (userEntity == null){
-                String password = passwordGenerator.generate(8);
-                userEntity.setLogin((String) map.get("email"));
-                userEntity.setPassword(passwordEncoder.encode(password) );
-                userEntity.setUserpic((String) map.get("picture"));
-                userEntity.setGender((String) map.get("gender"));
-                userEntity.setName((String) map.get("name"));
-                userEntity.setRoleEntity(roleEntityRepository.findByName("ROLE_USER"));
-                userEntity.setEmail((String) map.get("email"));
-                userEntity.setLocale((String) map.get("locale"));
-                String message = String.format("Hello %s!"+
-                        "Your password: %s", userEntity.getLogin(), password);
-                mailSender.send(userEntity.getEmail(), "Password", message);
-                userService.saveUser(userEntity);
-            }
-
-
-
-            return userEntity;
-        };
-    }
-
 }

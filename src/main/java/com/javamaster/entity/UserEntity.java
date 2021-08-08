@@ -59,4 +59,8 @@ public class UserEntity {
     public void setRoleEntity(RoleEntity byId) {
         roleEntity = byId;
     }
+
+    public boolean getActive() {
+        return this.active;
+    }
 }
