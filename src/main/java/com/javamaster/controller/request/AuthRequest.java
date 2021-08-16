@@ -1,4 +1,4 @@
-package com.javamaster.controller;
+package com.javamaster.controller.request;
 
 import lombok.Data;
 

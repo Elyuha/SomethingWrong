@@ -1,7 +1,7 @@
 package com.javamaster.config.jwt;
 
-import com.javamaster.config.CustomUserDetails;
-import com.javamaster.config.CustomUserDetailsService;
+import com.javamaster.config.userdetails.CustomUserDetails;
+import com.javamaster.config.userdetails.CustomUserDetailsService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

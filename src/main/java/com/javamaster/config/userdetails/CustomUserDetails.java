@@ -1,4 +1,4 @@
-package com.javamaster.config;
+package com.javamaster.config.userdetails;
 
 import com.javamaster.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;

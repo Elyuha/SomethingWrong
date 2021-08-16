@@ -1,5 +1,7 @@
 package com.javamaster.service;
 
+import com.javamaster.config.SecurityConfig;
+import com.javamaster.entity.MessageEntity;
 import com.javamaster.entity.RoleEntity;
 import com.javamaster.entity.UserEntity;
 import com.javamaster.repository.RoleEntityRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,6 +54,12 @@ public class UserService {
         userEntityRepository.save(userEntity);
     }
 
+    @Transactional
+    public void updateUserImage(String image){
+        UserEntity save = userEntityRepository.findByLogin(SecurityConfig.getCurrentUsername());
+        userEntityRepository.save(save);
+    }
+
     public UserEntity findById(Long id){
         Optional<UserEntity> byId = userEntityRepository.findById(id);
         try {
@@ -59,6 +68,12 @@ public class UserService {
         catch (NoSuchElementException e){
             return new UserEntity();
         }
+    }
+
+    public List<MessageEntity> findAllMessageById(Long id){
+        if(userEntityRepository.findById(id) == null)
+            return null;
+        return userEntityRepository.findAllMessageById(id);
     }
 
     public UserEntity findByLogin(String login) {

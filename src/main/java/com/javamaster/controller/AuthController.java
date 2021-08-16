@@ -1,6 +1,9 @@
 package com.javamaster.controller;
 
 import com.javamaster.config.jwt.JwtProvider;
+import com.javamaster.controller.request.AuthRequest;
+import com.javamaster.controller.request.RegistrationRequest;
+import com.javamaster.controller.response.AuthResponse;
 import com.javamaster.entity.UserEntity;
 import com.javamaster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

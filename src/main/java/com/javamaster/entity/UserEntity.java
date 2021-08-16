@@ -2,16 +2,9 @@ package com.javamaster.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_table")
@@ -52,9 +45,16 @@ public class UserEntity {
     @Column
     private String activationCode;
 
+    @Column
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private RoleEntity roleEntity;
+
+    @OneToMany(mappedBy = "UserEntity")
+    Set<MessageEntity> messageEntitySet;
+
 
     public void setRoleEntity(RoleEntity byId) {
         roleEntity = byId;

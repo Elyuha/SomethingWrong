@@ -1,4 +1,4 @@
-package com.javamaster.controller;
+package com.javamaster.controller.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
