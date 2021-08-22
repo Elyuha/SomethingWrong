@@ -25,7 +25,8 @@ public class FileUploadController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/file/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/file/upload",
+            method = RequestMethod.POST)
     public ResponseEntity<String> uploadFile(@RequestParam("name") String name,
                                              @RequestParam("file") MultipartFile file){
         if(!file.isEmpty()){

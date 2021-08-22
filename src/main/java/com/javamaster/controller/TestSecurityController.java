@@ -15,17 +15,23 @@ public class TestSecurityController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/admin/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/get",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public String getAdmin() {
         return "Hi admin";
     }
 
-    @RequestMapping(value = "/user/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/get",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public String getUser() {
         return "Hi user";
     }
 
-    @RequestMapping(value = "/user/getcurrent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/getcurrent",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public UserEntity getCurrentUser(){
         return userService.findByLogin(SecurityConfig.getCurrentUsername());
     }

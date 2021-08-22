@@ -1,6 +1,7 @@
 package com.javamaster.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,5 +27,12 @@ public class MessageEntity {
     @JsonIgnore
     @JoinColumn
     UserEntity userEntity;
+
+    @ManyToMany
+    @JoinTable(name = "post_table",
+    joinColumns =  @JoinColumn(name = "message_id"),
+    inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+    @JsonManagedReference
+    Set<HashtagEntity> hashtagEntitySet;
 
 }

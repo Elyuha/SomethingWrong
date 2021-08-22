@@ -15,7 +15,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String login;
 
     @Column
@@ -27,7 +27,7 @@ public class UserEntity {
     @Column
     private String userpic;
 
-    @Column
+    @Column(unique = true)
     private String email;
 
     @Column

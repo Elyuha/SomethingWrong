@@ -7,6 +7,7 @@ import com.javamaster.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ public class MessageService {
     @Autowired
     UserEntityRepository userEntityRepository;
 
+    @Transactional
     public void save(MessageEntity messageEntity){
         messageEntity.setUserEntity(
                 userEntityRepository.findByLogin(SecurityConfig.getCurrentUsername())
@@ -33,10 +35,10 @@ public class MessageService {
         return messageEntityRepository
                 .findAll(Sort.by(Sort.Direction.ASC, "date"));
     }
-
-    public List<MessageEntity> getAllMessageById(Long id){
-        return messageEntityRepository.findById(id)
-                .stream().sorted(Comparator.comparing(MessageEntity::getDate))
-                .collect(Collectors.toList());
-    }
+//
+//    public List<MessageEntity> getAllMessageById(Long id){
+//        return messageEntityRepository.findById(id)
+//                .stream().sorted(Comparator.comparing(MessageEntity::getDate))
+//                .collect(Collectors.toList());
+//    }
 }

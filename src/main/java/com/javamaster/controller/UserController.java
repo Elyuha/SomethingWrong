@@ -17,7 +17,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/user/setnewpassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/setnewpassword",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePassword(UserEntity userEntity){
         try {
             if (userEntity == null)
@@ -39,7 +41,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/user/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/user/update",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateName(UserEntity userEntity){
         try {
             if (userEntity == null)

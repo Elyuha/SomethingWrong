@@ -22,7 +22,9 @@ public class AuthController {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/register",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
         if(userService.findByLogin(registrationRequest.getLogin()) != null)
             return new ResponseEntity<>("This login is already used!", HttpStatus.CONFLICT);
@@ -37,7 +39,9 @@ public class AuthController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/auth",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request) {
         UserEntity userEntity = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         if(userEntity == null)
@@ -49,7 +53,9 @@ public class AuthController {
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/activate/{code}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/activate/{code}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> activateUser(@PathVariable String code){
         boolean isActive = userService.activateUser(code);
         if(isActive == true)

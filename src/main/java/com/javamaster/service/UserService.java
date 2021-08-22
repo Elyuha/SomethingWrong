@@ -57,6 +57,7 @@ public class UserService {
     @Transactional
     public void updateUserImage(String image){
         UserEntity save = userEntityRepository.findByLogin(SecurityConfig.getCurrentUsername());
+        save.setImage(image);
         userEntityRepository.save(save);
     }
 
@@ -70,11 +71,11 @@ public class UserService {
         }
     }
 
-    public List<MessageEntity> findAllMessageById(Long id){
-        if(userEntityRepository.findById(id) == null)
-            return null;
-        return userEntityRepository.findAllMessageById(id);
-    }
+//    public List<MessageEntity> findAllMessageById(Long id){
+//        if(userEntityRepository.findById(id) == null)
+//            return null;
+//        return userEntityRepository.findAllMessageById(id);
+//    }
 
     public UserEntity findByLogin(String login) {
         return userEntityRepository.findByLogin(login);
